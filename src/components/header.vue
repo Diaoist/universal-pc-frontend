@@ -9,7 +9,7 @@
         background-color: #1a2d4b;
         .container-left {
             float: left;
-            font-size: 20px;
+            font-size: 25px;
             i {
                 margin-left: 10px;
                 color: #fff;
@@ -24,13 +24,12 @@
             }
         }
         .container-right {
-            
+            font-size: 25px;
             float: right;
             i {
                 margin-right: 10px;
                 color: #fff;
                 width: 45px;
-                font-size: 20px;
                 line-height: 45px;
                 height: 45px;
                 margin-top: 12px;
@@ -47,7 +46,7 @@
         background-color: #1a2d4b;
         .container-left {
             float: left;
-            font-size: 20px;
+            font-size: 25px;
             i {
                 margin-left: 10px;
                 color: #fff;
@@ -69,13 +68,12 @@
             height: 45px;
         }
         .container-right {
-            
+            font-size: 25px;
             float: right;
             i {
                 margin-right: 10px;
                 color: #fff;
                 width: 45px;
-                font-size: 20px;
                 line-height: 45px;
                 height: 45px;
                 margin-top: 12px;
@@ -93,7 +91,7 @@
 
 <template>
 <div>
-  <div class="headerWrapper" @mouseenter="showFlag=true" @mouseleave="showFlag=false">
+  <div class="headerWrapper" @mouseenter="showHeader($event)" @mouseleave="showHeader($event)">
     <transition name="fade">
     <div class="header" v-show="showFlag">
       <div class="container-left">
@@ -124,6 +122,7 @@
       </div>
     </transition>
   </div>
+  <left-nav :navFlag="navFlag" @hideLeftnav="changeNavFlag"></left-nav>
 </div>
 </template>
 
@@ -133,16 +132,23 @@
     data() {
       return {
         showFlag: false,
+        navFlag: false,
       };
     },
     computed: {
     },
     methods: {
-      showHeader() {
-        this.showFlag = true;
+      showHeader(e) {
+        e.preventDefault();
+        if (!this.navFlag) this.showFlag = !this.showFlag;
+      },
+      changeNavFlag(flag) {
+        this.navFlag = flag;
       },
       showMenu(e) {
         e.preventDefault();
+        this.showFlag = false;
+        this.navFlag = true;
       },
     },
     mounted() {

@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <main-header></main-header>
-    <img src="./assets/logo.png">
     <router-view></router-view>
   </div>
 </template>
@@ -25,5 +24,8 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+}
+a {
+  text-decoration:none;
 }
 </style>

@@ -7,10 +7,12 @@ import App from './App';
 import router from './router';
 import MainHeader from './components/header';
 import MainFooter from './components/footer';
+import LeftNav from './components/leftnav';
 
 Vue.use(Element);
 Vue.component('main-header', MainHeader);
 Vue.component('main-footer', MainFooter);
+Vue.component('left-nav', LeftNav);
 
 Vue.config.productionTip = false;
 

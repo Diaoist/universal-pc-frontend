@@ -1,53 +1,83 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-      <br>
-      <li><a href="http://vuejs-templates.github.io/webpack/" target="_blank">Docs for This Template</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+    <div class="canvas-pdf">
+    <canvas id="left-canvas"></canvas>
+    <canvas id="right-canvas" ></canvas>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'hello',
+  mounted() {
+    this.canvas = document.getElementById('left-canvas');
+    this.ctx = this.canvas.getContext('2d');
+    setTimeout(() => {
+      this.renderPage('right-canvas');
+      this.renderPage('left-canvas');
+    }, 200);
+  },
   data() {
     return {
-      msg: 'Welcome to Your Vue.js App',
+      url: '//cdn.mozilla.net/pdfjs/tracemonkey.pdf',
+      pdfDoc: null,
+      pageNum: 1,
+      pageRendering: false,
+      pageNumPending: null,
+      scale: 0.8,
+      canvas: '',
+      ctx: '',
     };
+  },
+  methods: {
+    renderPage(id) {
+      const loadingTask = window.PDFJS.getDocument(this.url);
+      loadingTask.promise.then((pdf) => {
+        // Fetch the first page
+        const pageNumber = 1;
+        pdf.getPage(pageNumber).then((page) => {
+          const scale = 1.5;
+          const viewport = page.getViewport(scale);
+
+          // Prepare canvas using PDF page dimensions
+          const canvas = document.getElementById(id);
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          // Render PDF page into canvas context
+          const renderContext = {
+            canvasContext: context,
+            viewport,
+          };
+          const renderTask = page.render(renderContext);
+          renderTask.then(() => {
+          });
+        });
+      }, () => {
+        // PDF loading error
+      });
+    },
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
+<style lang="less" scoped>
+.hello {
+  .canvas-pdf {
+    display:flex;/*Flex布局*/
+    display: -webkit-flex; /* Safari */
+    align-items:center;/*指定垂直居中*/
+  }
 }
-
-ul {
-  list-style-type: none;
-  padding: 0;
+#left-canvas {
+  width: 50%;
+  // height:100%;
 }
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
+#right-canvas {
+  width: 50%;
+  // height:100%;
 }
 </style>
