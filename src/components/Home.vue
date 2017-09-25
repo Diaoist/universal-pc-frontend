@@ -13,14 +13,11 @@ export default {
   mounted() {
     this.canvas = document.getElementById('left-canvas');
     this.ctx = this.canvas.getContext('2d');
-    setTimeout(() => {
-      this.renderPage('right-canvas');
-      this.renderPage('left-canvas');
-    }, 200);
+    this.loadPDFJS();
   },
   data() {
     return {
-      url: '//cdn.mozilla.net/pdfjs/tracemonkey.pdf',
+      url: 'http://cdn.mozilla.net/pdfjs/tracemonkey.pdf',
       pdfDoc: null,
       pageNum: 1,
       pageRendering: false,
@@ -31,6 +28,16 @@ export default {
     };
   },
   methods: {
+    loadPDFJS() {
+      if (window.PDFJS) {
+        this.renderPage('right-canvas');
+        this.renderPage('left-canvas');
+      } else {
+        setTimeout(() => {
+          this.loadPDFJS();
+        }, 200);
+      }
+    },
     renderPage(id) {
       const loadingTask = window.PDFJS.getDocument(this.url);
       loadingTask.promise.then((pdf) => {
